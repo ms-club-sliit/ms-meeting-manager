@@ -13,15 +13,15 @@ public class MicrosoftTeamsController {
     @Autowired
     private MicrosoftTeamsService microsoftTeamsService;
 
-    @PostMapping
-    public String scheduleMeeting(@RequestBody MicrosoftTeams microsoftTeams) {
-        return microsoftTeamsService.scheduleMeeting(microsoftTeams);
+    @PostMapping("/test")
+    public String scheduleMeeting( ) {
+        return microsoftTeamsService.scheduleMeeting();
     }
 
-    @GetMapping("/test")
-    public String scheduleMeetingTest() {
-        return microsoftTeamsService.scheduleMeetingTest();
-    }
+//    @GetMapping("/test")
+//    public String scheduleMeetingTest() {
+//        return microsoftTeamsService.scheduleMeetingTest();
+//    }
 
 
 }
