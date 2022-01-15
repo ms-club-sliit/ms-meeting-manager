@@ -1,4 +1,4 @@
-package com.msclub.meetingmanager.model.microsoftteamsmeet;
+package com.msclub.meetingmanager.model.microsoft.microsoftteamsmeet;
 
 public class End {
     public String dateTime;

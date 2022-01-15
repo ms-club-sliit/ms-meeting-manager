@@ -1,10 +1,11 @@
 package com.msclub.meetingmanager.service;
 
 import com.google.gson.Gson;
-import com.msclub.meetingmanager.model.MicrosoftCredentials;
-import com.msclub.meetingmanager.model.MicrosoftTokenApiResponse;
-import com.msclub.meetingmanager.model.MicrosoftTeamsMeetingDetails;
-import com.msclub.meetingmanager.model.microsoftteamsmeet.*;
+import com.msclub.meetingmanager.model.microsoft.MSTeamsInterviewDetails;
+import com.msclub.meetingmanager.model.microsoft.MicrosoftCredentials;
+import com.msclub.meetingmanager.model.microsoft.MicrosoftTokenApiResponse;
+import com.msclub.meetingmanager.model.microsoft.MicrosoftTeamsMeetingDetails;
+import com.msclub.meetingmanager.model.microsoft.microsoftteamsmeet.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
@@ -21,7 +22,7 @@ public class MicrosoftTeamsService {
 
     static RestTemplate restTemplate = new RestTemplate();
 
-    public String scheduleMicrosoftMeeting() {
+    public String scheduleMicrosoftMeeting(MSTeamsInterviewDetails msTeamsInterviewDetails) {
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
@@ -41,37 +42,39 @@ public class MicrosoftTeamsService {
                         entity,
                         MicrosoftTokenApiResponse.class);
         if (response.getStatusCode() == HttpStatus.OK) {
-            return createMicrosoftMeeting(response.getBody().getAccess_token());
+            return createMicrosoftMeeting(response.getBody().getAccess_token(),msTeamsInterviewDetails);
         } else {
             return null;
         }
 
     }
 
-    public String createMicrosoftMeeting(String accessToken) {
+    public String createMicrosoftMeeting(String accessToken, MSTeamsInterviewDetails msTeamsInterviewDetails) {
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.set("Authorization", "Bearer " + accessToken);
 
         Body body = new Body("HTML","Thank you for applying with MS Club SLIIT. We would like to invite you for the next step of your application. Does this time work for you?");
-        Start start = new Start("2022-01-14T23:30:00","India Standard Time");
-        End end = new End("2022-01-14T23:50:00","India Standard Time");
+        Start start = new Start(msTeamsInterviewDetails.getStartDateTime(),"India Standard Time");
+        End end = new End(msTeamsInterviewDetails.getEndDateTime(),"India Standard Time");
         Location location = new Location("MS Club Conference Room");
 
-        EmailAddress emailAddress = new EmailAddress("it19139036@my.sliit.lk");
-        Attendee attendee = new Attendee(emailAddress,"required");
-
-        EmailAddress emailAddress2 = new EmailAddress("it19104218@my.sliit.lk");
-        Attendee attendee2 = new Attendee(emailAddress2,"required");
+        String[] emailList = msTeamsInterviewDetails.getEmailList();
+        EmailAddress emailAddress;
+        Attendee attendee;
 
         ArrayList<Attendee> attendees = new ArrayList<>();
-        attendees.add(attendee);
-        attendees.add(attendee2);
+
+        for (String email:emailList) {
+            emailAddress = new EmailAddress(email);
+            attendee = new Attendee(emailAddress,"required");
+            attendees.add(attendee);
+        }
 
         // create request body
         MicrosoftTeamsMeetingDetails microsoftTeamsMeetingDetails = new MicrosoftTeamsMeetingDetails();
-        microsoftTeamsMeetingDetails.setSubject("MS Club of SLIIT - Interview");
+        microsoftTeamsMeetingDetails.setSubject("MS Club of SLIIT - Interview " + msTeamsInterviewDetails.getStudentName());
         microsoftTeamsMeetingDetails.setBody(body);
         microsoftTeamsMeetingDetails.setStart(start);
         microsoftTeamsMeetingDetails.setEnd(end);
@@ -93,7 +96,7 @@ public class MicrosoftTeamsService {
         if (response.getStatusCode() == HttpStatus.CREATED) {
             return "Meeting Scheduled";
         } else {
-            return "Error occured in Meeting Scheduling";
+            return "Error occurred in Meeting Scheduling";
         }
     }
 

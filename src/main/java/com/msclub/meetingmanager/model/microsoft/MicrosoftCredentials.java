@@ -1,4 +1,4 @@
-package com.msclub.meetingmanager.model;
+package com.msclub.meetingmanager.model.microsoft;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
