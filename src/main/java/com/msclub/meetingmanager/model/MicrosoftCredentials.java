@@ -1,32 +1,73 @@
 package com.msclub.meetingmanager.model;
 
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.annotation.Configuration;
+
+@ConfigurationProperties(prefix="spring.microsoftcredentials")
+@Configuration
 public class MicrosoftCredentials {
 
-    private String access_token;
+    private String authTokenUri;
+    private String clientId;
+    private String clientSecret;
+    private String grantType;
+    private String scope;
+    private String refreshToken;
+    private String teamsMeetingCreateUrl;
 
-    private String refresh_token;
-
-    public MicrosoftCredentials() {
+    public String getAuthTokenUri() {
+        return authTokenUri;
     }
 
-    public MicrosoftCredentials(String access_token, String refresh_token) {
-        this.access_token = access_token;
-        this.refresh_token = refresh_token;
+    public void setAuthTokenUri(String authTokenUri) {
+        this.authTokenUri = authTokenUri;
     }
 
-    public String getAccess_token() {
-        return access_token;
+    public String getClientId() {
+        return clientId;
     }
 
-    public void setAccess_token(String access_token) {
-        this.access_token = access_token;
+    public void setClientId(String clientId) {
+        this.clientId = clientId;
     }
 
-    public String getRefresh_token() {
-        return refresh_token;
+    public String getClientSecret() {
+        return clientSecret;
     }
 
-    public void setRefresh_token(String refresh_token) {
-        this.refresh_token = refresh_token;
+    public void setClientSecret(String clientSecret) {
+        this.clientSecret = clientSecret;
+    }
+
+    public String getGrantType() {
+        return grantType;
+    }
+
+    public void setGrantType(String grantType) {
+        this.grantType = grantType;
+    }
+
+    public String getScope() {
+        return scope;
+    }
+
+    public void setScope(String scope) {
+        this.scope = scope;
+    }
+
+    public String getRefreshToken() {
+        return refreshToken;
+    }
+
+    public void setRefreshToken(String refreshToken) {
+        this.refreshToken = refreshToken;
+    }
+
+    public String getTeamsMeetingCreateUrl() {
+        return teamsMeetingCreateUrl;
+    }
+
+    public void setTeamsMeetingCreateUrl(String teamsMeetingCreateUrl) {
+        this.teamsMeetingCreateUrl = teamsMeetingCreateUrl;
     }
 }
