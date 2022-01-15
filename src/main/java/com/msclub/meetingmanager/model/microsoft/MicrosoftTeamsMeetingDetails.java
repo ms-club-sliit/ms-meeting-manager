@@ -1,9 +1,9 @@
-package com.msclub.meetingmanager.model;
-import com.msclub.meetingmanager.model.microsoftteamsmeet.Attendee;
-import com.msclub.meetingmanager.model.microsoftteamsmeet.End;
-import com.msclub.meetingmanager.model.microsoftteamsmeet.Location;
-import com.msclub.meetingmanager.model.microsoftteamsmeet.Start;
-import com.msclub.meetingmanager.model.microsoftteamsmeet.Body;
+package com.msclub.meetingmanager.model.microsoft;
+import com.msclub.meetingmanager.model.microsoft.microsoftteamsmeet.Attendee;
+import com.msclub.meetingmanager.model.microsoft.microsoftteamsmeet.End;
+import com.msclub.meetingmanager.model.microsoft.microsoftteamsmeet.Location;
+import com.msclub.meetingmanager.model.microsoft.microsoftteamsmeet.Start;
+import com.msclub.meetingmanager.model.microsoft.microsoftteamsmeet.Body;
 import java.util.ArrayList;
 
 public class MicrosoftTeamsMeetingDetails{

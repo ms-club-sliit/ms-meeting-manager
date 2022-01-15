@@ -1,4 +1,4 @@
-package com.msclub.meetingmanager.model;
+package com.msclub.meetingmanager.model.microsoft;
 
 public class MicrosoftTokenApiResponse {
 
