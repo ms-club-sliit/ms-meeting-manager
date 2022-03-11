@@ -87,14 +87,14 @@ public class MicrosoftTeamsService {
         HttpEntity<String> entity =
                 new HttpEntity<String>(new Gson().toJson(microsoftTeamsMeetingDetails), headers);
 
-        ResponseEntity<String> response =
+        ResponseEntity<MSMeetingResponse> response =
                 restTemplate.exchange(microsoftCredentials.getTeamsMeetingCreateUrl(),
                         HttpMethod.POST,
                         entity,
-                        String.class);
+                        MSMeetingResponse.class);
 
         if (response.getStatusCode() == HttpStatus.CREATED) {
-            return "Meeting Scheduled";
+            return response.getBody().getOnlineMeeting().getJoinUrl();
         } else {
             return "Error occurred in Meeting Scheduling";
         }
