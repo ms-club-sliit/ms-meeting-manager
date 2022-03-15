@@ -22,7 +22,7 @@ public class MicrosoftTeamsService {
 
     static RestTemplate restTemplate = new RestTemplate();
 
-    public String scheduleMicrosoftMeeting(MSTeamsInterviewDetails msTeamsInterviewDetails) {
+    public String scheduleMicrosoftMeeting(MSTeamsInterviewDetails msTeamsInterviewDetails , MicrosoftTeamsMeetingType type) {
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
@@ -42,14 +42,14 @@ public class MicrosoftTeamsService {
                         entity,
                         MicrosoftTokenApiResponse.class);
         if (response.getStatusCode() == HttpStatus.OK) {
-            return createMicrosoftMeeting(response.getBody().getAccess_token(),msTeamsInterviewDetails);
+            return createMicrosoftMeeting(response.getBody().getAccess_token(),msTeamsInterviewDetails , type);
         } else {
             return null;
         }
 
     }
 
-    public String createMicrosoftMeeting(String accessToken, MSTeamsInterviewDetails msTeamsInterviewDetails) {
+    public String createMicrosoftMeeting(String accessToken, MSTeamsInterviewDetails msTeamsInterviewDetails ,MicrosoftTeamsMeetingType type) {
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
@@ -74,7 +74,16 @@ public class MicrosoftTeamsService {
 
         // create request body
         MicrosoftTeamsMeetingDetails microsoftTeamsMeetingDetails = new MicrosoftTeamsMeetingDetails();
-        microsoftTeamsMeetingDetails.setSubject("MS Club of SLIIT - Interview " + msTeamsInterviewDetails.getStudentName());
+
+        switch(type){
+            case INTERVIEW:
+                            microsoftTeamsMeetingDetails.setSubject("MS Club of SLIIT - Interview " + msTeamsInterviewDetails.getStudentName());
+                            break;
+            case INTERNAL_MEETING:
+                             microsoftTeamsMeetingDetails.setSubject("MS Club of SLIIT - Internal - Meeting " + msTeamsInterviewDetails.getStudentName());
+                             break;
+        }
+
         microsoftTeamsMeetingDetails.setBody(body);
         microsoftTeamsMeetingDetails.setStart(start);
         microsoftTeamsMeetingDetails.setEnd(end);
