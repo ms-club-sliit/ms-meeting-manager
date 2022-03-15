@@ -17,6 +17,9 @@ public class MicrosoftTeamsMeetingDetails{
     public boolean isOnlineMeeting;
     public String onlineMeetingProvider;
 
+
+
+
     public String getSubject() {
         return subject;
     }

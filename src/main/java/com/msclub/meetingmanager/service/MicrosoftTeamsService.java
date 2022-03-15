@@ -1,10 +1,7 @@
 package com.msclub.meetingmanager.service;
 
 import com.google.gson.Gson;
-import com.msclub.meetingmanager.model.microsoft.MSTeamsInterviewDetails;
-import com.msclub.meetingmanager.model.microsoft.MicrosoftCredentials;
-import com.msclub.meetingmanager.model.microsoft.MicrosoftTokenApiResponse;
-import com.msclub.meetingmanager.model.microsoft.MicrosoftTeamsMeetingDetails;
+import com.msclub.meetingmanager.model.microsoft.*;
 import com.msclub.meetingmanager.model.microsoft.microsoftteamsmeet.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
@@ -22,7 +19,7 @@ public class MicrosoftTeamsService {
 
     static RestTemplate restTemplate = new RestTemplate();
 
-    public String scheduleMicrosoftMeeting(MSTeamsInterviewDetails msTeamsInterviewDetails) {
+    public String scheduleMicrosoftMeeting(MeetingDetails meetingDetails , MicrosoftTeamsMeetingType type) {
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
@@ -42,25 +39,25 @@ public class MicrosoftTeamsService {
                         entity,
                         MicrosoftTokenApiResponse.class);
         if (response.getStatusCode() == HttpStatus.OK) {
-            return createMicrosoftMeeting(response.getBody().getAccess_token(),msTeamsInterviewDetails);
+            return createMicrosoftMeeting(response.getBody().getAccess_token(),meetingDetails , type);
         } else {
             return null;
         }
 
     }
 
-    public String createMicrosoftMeeting(String accessToken, MSTeamsInterviewDetails msTeamsInterviewDetails) {
+    public String createMicrosoftMeeting(String accessToken, MeetingDetails meetingDetails ,MicrosoftTeamsMeetingType type) {
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.set("Authorization", "Bearer " + accessToken);
 
         Body body = new Body("HTML","Thank you for applying with MS Club SLIIT. We would like to invite you for the next step of your application. Does this time work for you?");
-        Start start = new Start(msTeamsInterviewDetails.getStartDateTime(),"India Standard Time");
-        End end = new End(msTeamsInterviewDetails.getEndDateTime(),"India Standard Time");
+        Start start = new Start(meetingDetails.getStartDateTime(),"India Standard Time");
+        End end = new End(meetingDetails.getEndDateTime(),"India Standard Time");
         Location location = new Location("MS Club Conference Room");
 
-        String[] emailList = msTeamsInterviewDetails.getEmailList();
+        String[] emailList = meetingDetails.getEmailList();
         EmailAddress emailAddress;
         Attendee attendee;
 
@@ -74,7 +71,18 @@ public class MicrosoftTeamsService {
 
         // create request body
         MicrosoftTeamsMeetingDetails microsoftTeamsMeetingDetails = new MicrosoftTeamsMeetingDetails();
-        microsoftTeamsMeetingDetails.setSubject("MS Club of SLIIT - Interview " + msTeamsInterviewDetails.getStudentName());
+
+        switch(type){
+            case INTERVIEW:
+
+                            microsoftTeamsMeetingDetails.setSubject("MS Club of SLIIT - Interview " + meetingDetails.getStudentName());
+                            break;
+            case INTERNAL_MEETING:
+
+                             microsoftTeamsMeetingDetails.setSubject(meetingDetails.getMeetingName());
+                             break;
+        }
+
         microsoftTeamsMeetingDetails.setBody(body);
         microsoftTeamsMeetingDetails.setStart(start);
         microsoftTeamsMeetingDetails.setEnd(end);
