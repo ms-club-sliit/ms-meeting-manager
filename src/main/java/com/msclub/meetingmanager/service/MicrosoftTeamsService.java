@@ -77,10 +77,12 @@ public class MicrosoftTeamsService {
 
         switch(type){
             case INTERVIEW:
+
                             microsoftTeamsMeetingDetails.setSubject("MS Club of SLIIT - Interview " + msTeamsInterviewDetails.getStudentName());
                             break;
             case INTERNAL_MEETING:
-                             microsoftTeamsMeetingDetails.setSubject("MS Club of SLIIT - Internal - Meeting " + msTeamsInterviewDetails.getStudentName());
+                             microsoftTeamsMeetingDetails.setTitle("Internal - Meeting");
+                             microsoftTeamsMeetingDetails.setSubject("MS Club of SLIIT - "+microsoftTeamsMeetingDetails.getTitle());
                              break;
         }
 
