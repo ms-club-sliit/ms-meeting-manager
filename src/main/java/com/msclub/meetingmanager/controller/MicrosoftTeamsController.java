@@ -1,5 +1,6 @@
 package com.msclub.meetingmanager.controller;
 
+import com.msclub.meetingmanager.model.microsoft.MeetingDetails;
 import com.msclub.meetingmanager.model.microsoft.MSTeamsInterviewDetails;
 import com.msclub.meetingmanager.model.microsoft.microsoftteamsmeet.MicrosoftTeamsMeetingType;
 import com.msclub.meetingmanager.service.MicrosoftTeamsService;
@@ -15,13 +16,13 @@ public class MicrosoftTeamsController {
     private MicrosoftTeamsService microsoftTeamsService;
 
     @PostMapping("/schedule")
-    public String scheduleMeeting(@RequestBody  MSTeamsInterviewDetails msTeamsInterviewDetails) {
-        return microsoftTeamsService.scheduleMicrosoftMeeting(msTeamsInterviewDetails , MicrosoftTeamsMeetingType.INTERVIEW);
+    public String scheduleMeeting(@RequestBody  MeetingDetails meetingDetails) {
+        return microsoftTeamsService.scheduleMicrosoftMeeting(meetingDetails , MicrosoftTeamsMeetingType.INTERVIEW);
     }
 
     @PostMapping("/internalmeeting/schedule")
-    public String scheduleInternalMeeting(@RequestBody  MSTeamsInterviewDetails msTeamsInterviewDetails){
-        return microsoftTeamsService.scheduleMicrosoftMeeting(msTeamsInterviewDetails , MicrosoftTeamsMeetingType.INTERNAL_MEETING);
+    public String scheduleInternalMeeting(@RequestBody MeetingDetails meetingDetails){
+        return microsoftTeamsService.scheduleMicrosoftMeeting(meetingDetails, MicrosoftTeamsMeetingType.INTERNAL_MEETING);
     }
 
 
