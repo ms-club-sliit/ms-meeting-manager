@@ -19,7 +19,7 @@ public class MicrosoftTeamsService {
 
     static RestTemplate restTemplate = new RestTemplate();
 
-    public String scheduleMicrosoftMeeting(MeetingDetails meetingDetails , MicrosoftTeamsMeetingType type) {
+    public ResponseEntity<?> scheduleMicrosoftMeeting(MeetingDetails meetingDetails , MicrosoftTeamsMeetingType type) {
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
@@ -39,14 +39,14 @@ public class MicrosoftTeamsService {
                         entity,
                         MicrosoftTokenApiResponse.class);
         if (response.getStatusCode() == HttpStatus.OK) {
-            return createMicrosoftMeeting(response.getBody().getAccess_token(),meetingDetails , type);
+            return new ResponseEntity<>(createMicrosoftMeeting(response.getBody().getAccess_token(),meetingDetails , type),HttpStatus.CREATED);
         } else {
-            return null;
+            return new ResponseEntity<>("Something went wrong",HttpStatus.BAD_REQUEST);
         }
 
     }
 
-    public String createMicrosoftMeeting(String accessToken, MeetingDetails meetingDetails ,MicrosoftTeamsMeetingType type) {
+    public ResponseEntity<?>  createMicrosoftMeeting(String accessToken, MeetingDetails meetingDetails ,MicrosoftTeamsMeetingType type) {
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
@@ -102,9 +102,9 @@ public class MicrosoftTeamsService {
                         MSMeetingResponse.class);
 
         if (response.getStatusCode() == HttpStatus.CREATED) {
-            return response.getBody().getOnlineMeeting().getJoinUrl();
-        } else {
-            return "Error occurred in Meeting Scheduling";
+            return new ResponseEntity<>(response.getBody(),HttpStatus.CREATED);
+        }else{
+            return new ResponseEntity<>("Something went wrong",HttpStatus.BAD_REQUEST);
         }
     }
 
