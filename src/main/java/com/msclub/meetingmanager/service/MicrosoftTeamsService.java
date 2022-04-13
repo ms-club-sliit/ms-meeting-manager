@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
+
 import java.util.ArrayList;
 
 @Service
@@ -19,17 +20,17 @@ public class MicrosoftTeamsService {
 
     static RestTemplate restTemplate = new RestTemplate();
 
-    public ResponseEntity<?> scheduleMicrosoftMeeting(MeetingDetails meetingDetails , MicrosoftTeamsMeetingType type) {
+    public ResponseEntity<?> scheduleMicrosoftMeeting(MeetingDetails meetingDetails, MicrosoftTeamsMeetingType type) {
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 
         MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
-        map.add("client_id",microsoftCredentials.getClientId());
-        map.add("client_secret",microsoftCredentials.getClientSecret());
-        map.add("grant_type",microsoftCredentials.getGrantType());
-        map.add("scope",microsoftCredentials.getScope());
-        map.add("refresh_token",microsoftCredentials.getRefreshToken());
+        map.add("client_id", microsoftCredentials.getClientId());
+        map.add("client_secret", microsoftCredentials.getClientSecret());
+        map.add("grant_type", microsoftCredentials.getGrantType());
+        map.add("scope", microsoftCredentials.getScope());
+        map.add("refresh_token", microsoftCredentials.getRefreshToken());
 
         HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<>(map, headers);
 
@@ -39,22 +40,22 @@ public class MicrosoftTeamsService {
                         entity,
                         MicrosoftTokenApiResponse.class);
         if (response.getStatusCode() == HttpStatus.OK) {
-            return new ResponseEntity<>(createMicrosoftMeeting(response.getBody().getAccess_token(),meetingDetails , type),HttpStatus.CREATED);
+            return new ResponseEntity<>(createMicrosoftMeeting(response.getBody().getAccess_token(), meetingDetails, type), HttpStatus.CREATED);
         } else {
-            return new ResponseEntity<>("Something went wrong",HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("Something went wrong", HttpStatus.BAD_REQUEST);
         }
 
     }
 
-    public ResponseEntity<?>  createMicrosoftMeeting(String accessToken, MeetingDetails meetingDetails ,MicrosoftTeamsMeetingType type) {
+    public ResponseEntity<?> createMicrosoftMeeting(String accessToken, MeetingDetails meetingDetails, MicrosoftTeamsMeetingType type) {
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.set("Authorization", "Bearer " + accessToken);
 
-        Body body = new Body("HTML","Thank you for applying with MS Club SLIIT. We would like to invite you for the next step of your application. Does this time work for you?");
-        Start start = new Start(meetingDetails.getStartDateTime(),"India Standard Time");
-        End end = new End(meetingDetails.getEndDateTime(),"India Standard Time");
+        Body body = new Body("HTML", "Thank you for applying with MS Club SLIIT. We would like to invite you for the next step of your application. Does this time work for you?");
+        Start start = new Start(meetingDetails.getStartDateTime(), "India Standard Time");
+        End end = new End(meetingDetails.getEndDateTime(), "India Standard Time");
         Location location = new Location("MS Club Conference Room");
 
         String[] emailList = meetingDetails.getEmailList();
@@ -63,24 +64,24 @@ public class MicrosoftTeamsService {
 
         ArrayList<Attendee> attendees = new ArrayList<>();
 
-        for (String email:emailList) {
+        for (String email : emailList) {
             emailAddress = new EmailAddress(email);
-            attendee = new Attendee(emailAddress,"required");
+            attendee = new Attendee(emailAddress, "required");
             attendees.add(attendee);
         }
 
         // create request body
         MicrosoftTeamsMeetingDetails microsoftTeamsMeetingDetails = new MicrosoftTeamsMeetingDetails();
 
-        switch(type){
+        switch (type) {
             case INTERVIEW:
 
-                            microsoftTeamsMeetingDetails.setSubject("MS Club of SLIIT - Interview " + meetingDetails.getStudentName());
-                            break;
+                microsoftTeamsMeetingDetails.setSubject("MS Club of SLIIT - Interview " + meetingDetails.getStudentName());
+                break;
             case INTERNAL_MEETING:
 
-                             microsoftTeamsMeetingDetails.setSubject(meetingDetails.getMeetingName());
-                             break;
+                microsoftTeamsMeetingDetails.setSubject(meetingDetails.getMeetingName());
+                break;
         }
 
         microsoftTeamsMeetingDetails.setBody(body);
@@ -102,9 +103,9 @@ public class MicrosoftTeamsService {
                         MSMeetingResponse.class);
 
         if (response.getStatusCode() == HttpStatus.CREATED) {
-            return new ResponseEntity<>(response.getBody(),HttpStatus.CREATED);
-        }else{
-            return new ResponseEntity<>("Something went wrong",HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(response.getBody(), HttpStatus.CREATED);
+        } else {
+            return new ResponseEntity<>("Something went wrong", HttpStatus.BAD_REQUEST);
         }
     }
 

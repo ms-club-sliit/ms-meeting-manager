@@ -1,12 +1,14 @@
 package com.msclub.meetingmanager.model.microsoft;
+
 import com.msclub.meetingmanager.model.microsoft.microsoftteamsmeet.Attendee;
 import com.msclub.meetingmanager.model.microsoft.microsoftteamsmeet.End;
 import com.msclub.meetingmanager.model.microsoft.microsoftteamsmeet.Location;
 import com.msclub.meetingmanager.model.microsoft.microsoftteamsmeet.Start;
 import com.msclub.meetingmanager.model.microsoft.microsoftteamsmeet.Body;
+
 import java.util.ArrayList;
 
-public class MicrosoftTeamsMeetingDetails{
+public class MicrosoftTeamsMeetingDetails {
     public String subject;
     public Body body;
     public Start start;
@@ -16,8 +18,6 @@ public class MicrosoftTeamsMeetingDetails{
     public boolean allowNewTimeProposals;
     public boolean isOnlineMeeting;
     public String onlineMeetingProvider;
-
-
 
 
     public String getSubject() {
