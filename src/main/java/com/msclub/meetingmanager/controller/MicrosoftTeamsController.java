@@ -28,7 +28,7 @@ public class MicrosoftTeamsController {
     }
 
     @DeleteMapping("/internalmeeting/{meetingId}")
-    public Object deleteMeeting(@PathVariable String meetingId) {
+    public ResponseEntity<?> deleteMeeting(@PathVariable String meetingId) {
         return microsoftTeamsService.deleteScheduleMeeting(meetingId);
     }
 
