@@ -109,4 +109,49 @@ public class MicrosoftTeamsService {
         }
     }
 
+    public String getAccessToken() {
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+
+        MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
+        map.add("client_id", microsoftCredentials.getClientId());
+        map.add("client_secret", microsoftCredentials.getClientSecret());
+        map.add("grant_type", microsoftCredentials.getGrantType());
+        map.add("scope", microsoftCredentials.getScope());
+        map.add("refresh_token", microsoftCredentials.getRefreshToken());
+
+        HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<>(map, headers);
+
+        ResponseEntity<MicrosoftTokenApiResponse> response =
+                restTemplate.exchange(microsoftCredentials.getAuthTokenUri(),
+                        HttpMethod.POST,
+                        entity,
+                        MicrosoftTokenApiResponse.class);
+
+        if (response.getStatusCode() == HttpStatus.OK) {
+            return response.getBody().getAccess_token();
+        } else {
+            return "Something went wrong";
+        }
+
+    }
+
+    public ResponseEntity<String> deleteScheduleMeeting(String meetingId) {
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.set("Authorization", "Bearer " + getAccessToken());
+
+        HttpEntity<String> entity = new HttpEntity<>(headers);
+
+        ResponseEntity<String> response =
+                restTemplate.exchange("https://graph.microsoft.com/v1.0/me/events/"+meetingId,
+                        HttpMethod.POST,
+                        entity,
+                        String.class);
+
+        return response;
+    }
+
 }
