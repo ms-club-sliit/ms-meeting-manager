@@ -27,5 +27,9 @@ public class MicrosoftTeamsController {
         return microsoftTeamsService.scheduleMicrosoftMeeting(meetingDetails, MicrosoftTeamsMeetingType.INTERNAL_MEETING);
     }
 
+    @DeleteMapping("/internalmeeting/{meetingId}")
+    public ResponseEntity<?> deleteMeeting(@PathVariable String meetingId) {
+        return microsoftTeamsService.deleteScheduleMeeting(meetingId);
+    }
 
 }
