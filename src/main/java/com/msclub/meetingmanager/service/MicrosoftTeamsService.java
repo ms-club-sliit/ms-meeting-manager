@@ -147,11 +147,15 @@ public class MicrosoftTeamsService {
 
         ResponseEntity<String> response =
                 restTemplate.exchange("https://graph.microsoft.com/v1.0/me/events/"+meetingId,
-                        HttpMethod.POST,
+                        HttpMethod.DELETE,
                         entity,
                         String.class);
 
-        return response;
+        if (response.getStatusCode() == HttpStatus.NO_CONTENT) {
+            return new ResponseEntity<String>("Scheduled Meeting Deleted", HttpStatus.OK);
+        } else {
+            return new ResponseEntity<String>("Something went wrong", HttpStatus.BAD_REQUEST);
+        }
     }
 
 }
