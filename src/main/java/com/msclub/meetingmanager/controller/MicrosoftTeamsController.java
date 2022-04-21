@@ -32,4 +32,8 @@ public class MicrosoftTeamsController {
         return microsoftTeamsService.deleteScheduleMeeting(meetingId);
     }
 
+    @PatchMapping("/internalmeeting/{meetingId}")
+    public ResponseEntity<?> updateMeeting(@PathVariable String meetingId, @RequestBody MeetingDetails meetingDetails) {
+        return microsoftTeamsService.updateScheduleMeeting(meetingId, meetingDetails);
+    }
 }
