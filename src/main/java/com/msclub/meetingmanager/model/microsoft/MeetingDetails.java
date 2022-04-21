@@ -2,7 +2,6 @@ package com.msclub.meetingmanager.model.microsoft;
 
 public class MeetingDetails {
 
-    private String studentName;
 
     private String meetingName;
 
@@ -12,13 +11,9 @@ public class MeetingDetails {
 
     private String[] emailList;
 
-    public String getStudentName() {
-        return studentName;
-    }
 
-    public void setStudentName(String studentName) {
-        this.studentName = studentName;
-    }
+
+
 
     public String getMeetingName() {
         return meetingName;
