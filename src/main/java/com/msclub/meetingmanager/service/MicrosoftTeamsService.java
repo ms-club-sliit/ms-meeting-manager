@@ -158,4 +158,24 @@ public class MicrosoftTeamsService {
         }
     }
 
+    public ResponseEntity<String> updateScheduleMeeting(String meetingId, MeetingDetails meetingDetails) {
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.set("Authorization", "Bearer " + getAccessToken());
+
+        HttpEntity<String> entity = new HttpEntity<>(new Gson().toJson(meetingDetails), headers);
+
+        ResponseEntity<String> response =
+                restTemplate.exchange("https://graph.microsoft.com/v1.0/me/events/"+meetingId,
+                        HttpMethod.PATCH,
+                        entity,
+                        String.class);
+
+        if (response.getStatusCode() == HttpStatus.NO_CONTENT) {
+            return new ResponseEntity<String>("Scheduled Meeting Updated", HttpStatus.OK);
+        } else {
+            return new ResponseEntity<String>("Something went wrong", HttpStatus.BAD_REQUEST);
+        }
+    }
 }
