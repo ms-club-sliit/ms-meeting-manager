@@ -10,7 +10,14 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpResponse;
 import java.util.ArrayList;
+
+import java.net.http.HttpRequest;
+import java.util.concurrent.CompletableFuture;
+
 
 @Service
 public class MicrosoftTeamsService {
@@ -76,7 +83,7 @@ public class MicrosoftTeamsService {
         switch (type) {
             case INTERVIEW:
 
-                microsoftTeamsMeetingDetails.setSubject("MS Club of SLIIT - Interview " + meetingDetails.getStudentName());
+                microsoftTeamsMeetingDetails.setSubject("MS Club of SLIIT - Interview " + meetingDetails.getMeetingName());
                 break;
             case INTERNAL_MEETING:
 
@@ -158,4 +165,41 @@ public class MicrosoftTeamsService {
         }
     }
 
+    public CompletableFuture<Void> updateScheduleMeeting(String meetingId, MeetingDetails meetingDetails) {
+
+        Start start = new Start(meetingDetails.getStartDateTime(), "India Standard Time");
+        End end = new End(meetingDetails.getEndDateTime(), "India Standard Time");
+
+        String[] emailList = meetingDetails.getEmailList();
+        EmailAddress emailAddress;
+        Attendee attendee;
+
+        ArrayList<Attendee> attendees = new ArrayList<>();
+
+        for (String email : emailList) {
+            emailAddress = new EmailAddress(email);
+            attendee = new Attendee(emailAddress, "required");
+            attendees.add(attendee);
+        }
+
+        // create request body
+        MicrosoftTeamsMeetingDetails microsoftTeamsMeetingDetails = new MicrosoftTeamsMeetingDetails();
+
+        microsoftTeamsMeetingDetails.setStart(start);
+        microsoftTeamsMeetingDetails.setEnd(end);
+        microsoftTeamsMeetingDetails.setAttendees(attendees);
+
+        String jsonStr = new Gson().toJson(microsoftTeamsMeetingDetails);
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create("https://graph.microsoft.com/v1.0/me/events/"+meetingId))
+                .method("PATCH", HttpRequest.BodyPublishers.ofString(jsonStr))
+                .header("Content-Type", "application/json")
+                .header("Authorization", "Bearer " + getAccessToken())
+                .build();
+
+        return HttpClient.newHttpClient()
+                .sendAsync(request, HttpResponse.BodyHandlers.ofString())
+                .thenApply(HttpResponse::statusCode)
+                .thenAccept(System.out::println);
+    }
 }
