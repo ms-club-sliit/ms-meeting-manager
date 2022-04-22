@@ -10,7 +10,14 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpResponse;
 import java.util.ArrayList;
+
+import java.net.http.HttpRequest;
+import java.util.concurrent.CompletableFuture;
+
 
 @Service
 public class MicrosoftTeamsService {
@@ -158,24 +165,41 @@ public class MicrosoftTeamsService {
         }
     }
 
-    public ResponseEntity<String> updateScheduleMeeting(String meetingId, MeetingDetails meetingDetails) {
+    public CompletableFuture<Void> updateScheduleMeeting(String meetingId, MeetingDetails meetingDetails) {
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.set("Authorization", "Bearer " + getAccessToken());
+        Start start = new Start(meetingDetails.getStartDateTime(), "India Standard Time");
+        End end = new End(meetingDetails.getEndDateTime(), "India Standard Time");
 
-        HttpEntity<String> entity = new HttpEntity<>(new Gson().toJson(meetingDetails), headers);
+        String[] emailList = meetingDetails.getEmailList();
+        EmailAddress emailAddress;
+        Attendee attendee;
 
-        ResponseEntity<String> response =
-                restTemplate.exchange("https://graph.microsoft.com/v1.0/me/events/"+meetingId,
-                        HttpMethod.PATCH,
-                        entity,
-                        String.class);
+        ArrayList<Attendee> attendees = new ArrayList<>();
 
-        if (response.getStatusCode() == HttpStatus.NO_CONTENT) {
-            return new ResponseEntity<String>("Scheduled Meeting Updated", HttpStatus.OK);
-        } else {
-            return new ResponseEntity<String>("Something went wrong", HttpStatus.BAD_REQUEST);
+        for (String email : emailList) {
+            emailAddress = new EmailAddress(email);
+            attendee = new Attendee(emailAddress, "required");
+            attendees.add(attendee);
         }
+
+        // create request body
+        MicrosoftTeamsMeetingDetails microsoftTeamsMeetingDetails = new MicrosoftTeamsMeetingDetails();
+
+        microsoftTeamsMeetingDetails.setStart(start);
+        microsoftTeamsMeetingDetails.setEnd(end);
+        microsoftTeamsMeetingDetails.setAttendees(attendees);
+
+        String jsonStr = new Gson().toJson(microsoftTeamsMeetingDetails);
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create("https://graph.microsoft.com/v1.0/me/events/"+meetingId))
+                .method("PATCH", HttpRequest.BodyPublishers.ofString(jsonStr))
+                .header("Content-Type", "application/json")
+                .header("Authorization", "Bearer " + getAccessToken())
+                .build();
+
+        return HttpClient.newHttpClient()
+                .sendAsync(request, HttpResponse.BodyHandlers.ofString())
+                .thenApply(HttpResponse::statusCode)
+                .thenAccept(System.out::println);
     }
 }

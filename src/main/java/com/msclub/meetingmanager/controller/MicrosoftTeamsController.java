@@ -1,13 +1,13 @@
 package com.msclub.meetingmanager.controller;
 
 import com.msclub.meetingmanager.model.microsoft.MeetingDetails;
-import com.msclub.meetingmanager.model.microsoft.MSTeamsInterviewDetails;
-import com.msclub.meetingmanager.model.microsoft.microsoftteamsmeet.MSMeetingResponse;
 import com.msclub.meetingmanager.model.microsoft.microsoftteamsmeet.MicrosoftTeamsMeetingType;
 import com.msclub.meetingmanager.service.MicrosoftTeamsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.concurrent.CompletableFuture;
 
 @CrossOrigin("*")
 @RequestMapping(value = "/api/msteams")
@@ -33,7 +33,7 @@ public class MicrosoftTeamsController {
     }
 
     @PatchMapping("/internalmeeting/{meetingId}")
-    public ResponseEntity<?> updateMeeting(@PathVariable String meetingId, @RequestBody MeetingDetails meetingDetails) {
+    public CompletableFuture<Void> updateMeeting(@PathVariable String meetingId, @RequestBody MeetingDetails meetingDetails) {
         return microsoftTeamsService.updateScheduleMeeting(meetingId, meetingDetails);
     }
 }
