@@ -15,6 +15,7 @@
     <description>This backend is for automate the schedule meeting process</description>
     <properties>
         <java.version>12</java.version>
+        <maven.compiler.release>12</maven.compiler.release>
     </properties>
     <dependencies>
         <dependency>
