@@ -32,7 +32,7 @@ public class MicrosoftTeamsController {
         return microsoftTeamsService.deleteScheduleMeeting(meetingId);
     }
 
-    @PatchMapping("/internalmeeting/{meetingId}")
+    @PatchMapping("/meeting/{meetingId}")
     public CompletableFuture<Void> updateMeeting(@PathVariable String meetingId, @RequestBody MeetingDetails meetingDetails) {
         return microsoftTeamsService.updateScheduleMeeting(meetingId, meetingDetails);
     }
