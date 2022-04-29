@@ -16,25 +16,16 @@ import java.util.*;
 @RestController
 public class GoogleMeetController {
     @GetMapping("/requestAuthorization")
-    public void requestAuth(HttpServletResponse httpServletResponse) {
-        try{
+    public void requestAuth(HttpServletResponse httpServletResponse) throws IOException {
             String uuid = UUID.randomUUID().toString();
             AuthorizationFlow auth = GoogleMeetingService.startAuthorization(System.getenv("GoogleRedirectURIHost") + "/api/googlemeet/authorizeGoogle?authId=" + uuid, uuid);
             httpServletResponse.sendRedirect(auth.getRedirectURL().toString());
-
-        }catch(Exception e){
-            e.printStackTrace();
-        }
     }
 
     @GetMapping("/authorizeGoogle")
     @ResponseBody
-    public String auth(@RequestParam(required = true) String code, @RequestParam(required = true) String authId){
-        try{
+    public String auth(@RequestParam(required = true) String code, @RequestParam(required = true) String authId) throws Exception {
             return GoogleMeetingService.authorize(authId, code);
-        }catch (Exception e){
-            return e.getMessage();
-        }
     }
 
     @PostMapping("/schedule")
