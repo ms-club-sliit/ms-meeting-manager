@@ -12,7 +12,6 @@ public class MsclubmeetingmanagerApplication {
             GoogleMeetingService.init();
         }catch (Exception e){
             e.printStackTrace();
-            return;
         }
         SpringApplication.run(MsclubmeetingmanagerApplication.class, args);
     }
