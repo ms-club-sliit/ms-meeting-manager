@@ -1,5 +1,6 @@
 package com.msclub.meetingmanager;
 
+import com.msclub.meetingmanager.service.GoogleMeetingService;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
