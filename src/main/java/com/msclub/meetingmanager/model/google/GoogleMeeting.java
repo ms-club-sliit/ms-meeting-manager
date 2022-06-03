@@ -14,7 +14,7 @@ public class GoogleMeeting {
     private String startDateTime;
     private String endDateTime;
     private List<String> emailList = new ArrayList<>();
-    private String sheduledLink;
+    private String scheduledLink;
 
     public String getMeetingId() {
         return meetingId;
@@ -23,12 +23,12 @@ public class GoogleMeeting {
     public void setMeetingId(String meetingId) {
         this.meetingId = meetingId;
     }
-    public String getSheduledLink() {
-        return sheduledLink;
+    public String getScheduledLink() {
+        return scheduledLink;
     }
 
-    public void setSheduledLink(String sheduledLink) {
-        this.sheduledLink = sheduledLink;
+    public void setScheduledLink(String scheduledLink) {
+        this.scheduledLink = scheduledLink;
     }
 
     public String getMeetingName() {
@@ -95,7 +95,7 @@ public class GoogleMeeting {
         meetingDetails.setMeetingName(event.getSummary());
 
         String link = event.getConferenceData().getEntryPoints().get(0).getUri();
-        meetingDetails.setSheduledLink(link);
+        meetingDetails.setScheduledLink(link);
 
         return meetingDetails;
     }
